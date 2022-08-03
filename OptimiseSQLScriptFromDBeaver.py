@@ -13,11 +13,11 @@ Module Module1
         Dim FileList As New List(Of String)
         Dim FileIndex As Integer
 
-        'Получение папки со скриптами от пользователя
+        'РџРѕР»СѓС‡РµРЅРёРµ РїР°РїРєРё СЃРѕ СЃРєСЂРёРїС‚Р°РјРё РѕС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
 
         Dim ValidFile As Boolean = False
 
-        Console.WriteLine("Введите путь к папке с файлами скрипта, для их обработки у файла должен быть префикс SCRIPT_INSERT_INTO_...")
+        Console.WriteLine("Р’РІРµРґРёС‚Рµ РїСѓС‚СЊ Рє РїР°РїРєРµ СЃ С„Р°Р№Р»Р°РјРё СЃРєСЂРёРїС‚Р°, РґР»СЏ РёС… РѕР±СЂР°Р±РѕС‚РєРё Сѓ С„Р°Р№Р»Р° РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ РїСЂРµС„РёРєСЃ SCRIPT_INSERT_INTO_...")
         PathToScript = Console.ReadLine()
         For Each FoundFile As String In My.Computer.FileSystem.GetFiles(PathToScript)
             If FoundFile.Contains("SCRIPT_INSERT_INTO_") And FoundFile.Contains(".sql") Then
@@ -25,23 +25,23 @@ Module Module1
             End If
         Next
 
-        'Обработка каждого файла
+        'РћР±СЂР°Р±РѕС‚РєР° РєР°Р¶РґРѕРіРѕ С„Р°Р№Р»Р°
 
         For FileIndex = 0 To FileList.Count - 1
             OrigScriptName = Path.GetFileNameWithoutExtension(FileList.Item(FileIndex))
-            Console.WriteLine("Обработка файла: " & OrigScriptName)
+            Console.WriteLine("РћР±СЂР°Р±РѕС‚РєР° С„Р°Р№Р»Р°: " & OrigScriptName)
 
-            'Чтение файла скрипта
+            'Р§С‚РµРЅРёРµ С„Р°Р№Р»Р° СЃРєСЂРёРїС‚Р°
 
             FileReader = My.Computer.FileSystem.ReadAllText(FileList.Item(FileIndex))
 
-            '++Изменение содержимого скрипта++
+            '++РР·РјРµРЅРµРЅРёРµ СЃРѕРґРµСЂР¶РёРјРѕРіРѕ СЃРєСЂРёРїС‚Р°++
 
-            'Удаление переносов строк
+            'РЈРґР°Р»РµРЅРёРµ РїРµСЂРµРЅРѕСЃРѕРІ СЃС‚СЂРѕРє
 
             FileReader = Replace(FileReader, vbCrLf, "")
 
-            'Запись в коллекцию всех похожих строк типа INSERT INTO
+            'Р—Р°РїРёСЃСЊ РІ РєРѕР»Р»РµРєС†РёСЋ РІСЃРµС… РїРѕС…РѕР¶РёС… СЃС‚СЂРѕРє С‚РёРїР° INSERT INTO
 
             Dim RegexList As New List(Of String)
             Dim Pattern As String = "INSERT INTO .+? (.+?) "
@@ -50,13 +50,13 @@ Module Module1
                 RegexList.Add(PatternConj.Value)
             Next
 
-            'Вставка правильных переносов строк в SQL файл
+            'Р’СЃС‚Р°РІРєР° РїСЂР°РІРёР»СЊРЅС‹С… РїРµСЂРµРЅРѕСЃРѕРІ СЃС‚СЂРѕРє РІ SQL С„Р°Р№Р»
 
             Dim FileReaderArr() As String
             FileReaderArr = Split(FileReader, ";")
             FileReader = Join(FileReaderArr, ";" & vbCrLf)
 
-            'Удаление повторяющихся строк в коллекции  и добавление редактированного List обратно в Temp
+            'РЈРґР°Р»РµРЅРёРµ РїРѕРІС‚РѕСЂСЏСЋС‰РёС…СЃСЏ СЃС‚СЂРѕРє РІ РєРѕР»Р»РµРєС†РёРё  Рё РґРѕР±Р°РІР»РµРЅРёРµ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРЅРѕРіРѕ List РѕР±СЂР°С‚РЅРѕ РІ Temp
 
             Dim RegexListRedacted As New List(Of String)
             Dim LineCont As String
@@ -67,7 +67,7 @@ Module Module1
                 End If
             Next
 
-            'Редактирование данных построчно (убрать лишние строки INSERT INTO)
+            'Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ РґР°РЅРЅС‹С… РїРѕСЃС‚СЂРѕС‡РЅРѕ (СѓР±СЂР°С‚СЊ Р»РёС€РЅРёРµ СЃС‚СЂРѕРєРё INSERT INTO)
 
             Dim OriginalTextArr() As String
             Dim StringTEMP() As String
@@ -80,35 +80,35 @@ Module Module1
             StringTEMP = Split(FileReader, vbCrLf)
 
             For i = 0 To OriginalTextArr.Count - 1
-                If OriginalTextArr(i) <> "" Then 'Для игнорирования пустых строк
+                If OriginalTextArr(i) <> "" Then 'Р”Р»СЏ РёРіРЅРѕСЂРёСЂРѕРІР°РЅРёСЏ РїСѓСЃС‚С‹С… СЃС‚СЂРѕРє
                     For j = 0 To RegexListRedacted.Count - 1
                         PatternFromRegex = RegexListRedacted.Item(j)
-                        If OriginalTextArr(i).Contains(PatternFromRegex) = True Then 'Проверка, содержит ли данная строка запись в макете
-                            If i = 0 Then 'Пропуск первой строки
+                        If OriginalTextArr(i).Contains(PatternFromRegex) = True Then 'РџСЂРѕРІРµСЂРєР°, СЃРѕРґРµСЂР¶РёС‚ Р»Рё РґР°РЅРЅР°СЏ СЃС‚СЂРѕРєР° Р·Р°РїРёСЃСЊ РІ РјР°РєРµС‚Рµ
+                            If i = 0 Then 'РџСЂРѕРїСѓСЃРє РїРµСЂРІРѕР№ СЃС‚СЂРѕРєРё
                                 CmplBoolean = False
                             Else
-                                CmplBoolean = IIf(StringTEMP(i - 1).Contains(PatternFromRegex) = True, True, False) 'Сравнение, содержит ли эта строка такие же данные как и предыдущая по TEMP массиву
+                                CmplBoolean = IIf(StringTEMP(i - 1).Contains(PatternFromRegex) = True, True, False) 'РЎСЂР°РІРЅРµРЅРёРµ, СЃРѕРґРµСЂР¶РёС‚ Р»Рё СЌС‚Р° СЃС‚СЂРѕРєР° С‚Р°РєРёРµ Р¶Рµ РґР°РЅРЅС‹Рµ РєР°Рє Рё РїСЂРµРґС‹РґСѓС‰Р°СЏ РїРѕ TEMP РјР°СЃСЃРёРІСѓ
                             End If
                             Exit For
                         End If
                     Next j
 
                     If CmplBoolean = True Then
-                        OriginalTextArr(i) = Replace(OriginalTextArr(i), RegexListRedacted.Item(j), "") 'Удаление ненужной информации в строках
+                        OriginalTextArr(i) = Replace(OriginalTextArr(i), RegexListRedacted.Item(j), "") 'РЈРґР°Р»РµРЅРёРµ РЅРµРЅСѓР¶РЅРѕР№ РёРЅС„РѕСЂРјР°С†РёРё РІ СЃС‚СЂРѕРєР°С…
                     Else
-                        INSINTPlace.Add(i) 'Добавление номера строки в котором находится запись типа INSERT INTO () VALUES ()
+                        INSINTPlace.Add(i) 'Р”РѕР±Р°РІР»РµРЅРёРµ РЅРѕРјРµСЂР° СЃС‚СЂРѕРєРё РІ РєРѕС‚РѕСЂРѕРј РЅР°С…РѕРґРёС‚СЃСЏ Р·Р°РїРёСЃСЊ С‚РёРїР° INSERT INTO () VALUES ()
                     End If
                 End If
             Next i
 
-            'Редактирование данных построчно (Редактирование текста функции VALUES, она остается в строке)
+            'Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ РґР°РЅРЅС‹С… РїРѕСЃС‚СЂРѕС‡РЅРѕ (Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ С‚РµРєСЃС‚Р° С„СѓРЅРєС†РёРё VALUES, РѕРЅР° РѕСЃС‚Р°РµС‚СЃСЏ РІ СЃС‚СЂРѕРєРµ)
 
             For i = 0 To INSINTPlace.Count - 1
                 OriginalTextArr(INSINTPlace(i)) = Replace(OriginalTextArr(INSINTPlace(i)), " VALUES", vbCrLf & "VALUES")
                 OriginalTextArr(INSINTPlace(i)) = Replace(OriginalTextArr(INSINTPlace(i)), ");", "),")
             Next i
 
-            'Редактирование данных построчно (Редактирование текста функции VALUES, она остается в строке)
+            'Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ РґР°РЅРЅС‹С… РїРѕСЃС‚СЂРѕС‡РЅРѕ (Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ С‚РµРєСЃС‚Р° С„СѓРЅРєС†РёРё VALUES, РѕРЅР° РѕСЃС‚Р°РµС‚СЃСЏ РІ СЃС‚СЂРѕРєРµ)
 
             For i = 0 To OriginalTextArr.Count - 1
                 If i <> OriginalTextArr.Count - 1 Then
@@ -119,15 +119,15 @@ Module Module1
             Next i
             FileReader = Join(OriginalTextArr, vbCrLf)
 
-            'Создание файла оптимизированного скрипта и запись
+            'РЎРѕР·РґР°РЅРёРµ С„Р°Р№Р»Р° РѕРїС‚РёРјРёР·РёСЂРѕРІР°РЅРЅРѕРіРѕ СЃРєСЂРёРїС‚Р° Рё Р·Р°РїРёСЃСЊ
 
             OptimScriptName = OrigScriptName & "_Optimized.sql"
-            Console.WriteLine("Создание файла " & OptimScriptName)
+            Console.WriteLine("РЎРѕР·РґР°РЅРёРµ С„Р°Р№Р»Р° " & OptimScriptName)
             PathToOptimScript = PathToScript & "\" & OptimScriptName
             My.Computer.FileSystem.WriteAllText(PathToOptimScript, FileReader, False)
-            Console.WriteLine("Файл " & OrigScriptName & " обработан и оптимизирован.")
+            Console.WriteLine("Р¤Р°Р№Р» " & OrigScriptName & " РѕР±СЂР°Р±РѕС‚Р°РЅ Рё РѕРїС‚РёРјРёР·РёСЂРѕРІР°РЅ.")
 
-            'Обнуление FileReader
+            'РћР±РЅСѓР»РµРЅРёРµ FileReader
 
             FileReader = ""
 
